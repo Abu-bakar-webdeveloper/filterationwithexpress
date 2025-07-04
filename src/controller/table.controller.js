@@ -1,12 +1,25 @@
-export const addData = (req, res) => {
-  const { productName, status, customer, shopkeeper } = req.body;
+import Table from '../models/table.model.js';
 
-  // Simulate adding data to the table
-  
+export const addData = async (req, res) => {
+  const data = req.body;
 
-  // Respond with a success message
-  res.status(200).json({
-    message: `Data added to ${productName} successfully!`,
-    data: { productName, customer, shopkeeper },
-  });
+  if (!Array.isArray(data)) {
+    return res.status(400).json({
+      message: 'Request body must be an array of table objects',
+    });
+  }
+
+  try {
+    const inserted = await Table.insertMany(data);
+    res.status(200).json({
+      message: 'Bulk data added successfully!',
+      count: inserted.length,
+      data: inserted,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Error inserting bulk data',
+      error: error.message,
+    });
+  }
 };

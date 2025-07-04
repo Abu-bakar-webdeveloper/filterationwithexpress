@@ -1,8 +1,13 @@
 import express from 'express';
 import router from './src/routes/table.routes.js';
+import{ connectDB } from './src/config/db.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+connectDB()
+  .then(() => console.log('Database connected successfully'))
+  .catch(err => console.error('Database connection failed:', err));
 
 app.use(express.json());
 
